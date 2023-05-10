@@ -3,12 +3,13 @@ import pytest
 from dataclasses import dataclass
 import dataclasses
 
+
 class Vector:
     def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
-    def __add__(self, other: 'Vector') -> 'Vector': # Self as annotation since 3.11
+    def __add__(self, other: 'Vector') -> 'Vector':  # Self as annotation since 3.11
         return Vector(self.x + other.x, self.y + other.y)
 
     def __eq__(self, other: 'Vector') -> bool:
@@ -16,7 +17,7 @@ class Vector:
 
     def __repr__(self):
         return f"Vector(x={self.x!r}, y={self.y!r})"
-    
+
     def __abs__(self) -> float:
         return math.sqrt(self.x*self.x + self.y*self.y)
 
@@ -28,16 +29,17 @@ class Vector:
 
     def angle(self) -> float:
         return math.atan2(self.y, self.x)
-    
+
     # def __iter__(self):
     #     yield self.x
     #     yield self.y
 
-    def __iter__(self):
+    def __iter__(self): 
         return (n for n in (self.x, self.y))
-    
+
     def __hash__(self) -> int:
-        return hash(list(self))
+        return hash(tuple(self))
+
 
 def test_Vector_init():
     v = Vector(1, 2)
