@@ -4,9 +4,40 @@ from dataclasses import dataclass
 import dataclasses
 
 class Vector:
-    """TODO"""
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
 
+    def __add__(self, other: 'Vector') -> 'Vector': # Self as annotation since 3.11
+        return Vector(self.x + other.x, self.y + other.y)
 
+    def __eq__(self, other: 'Vector') -> bool:
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return f"Vector(x={self.x!r}, y={self.y!r})"
+    
+    def __abs__(self) -> float:
+        return math.sqrt(self.x*self.x + self.y*self.y)
+
+    def __mul__(self, a: float) -> 'Vector':
+        return Vector(self.x * a, self.y * a)
+
+    def __bool__(self) -> bool:
+        return bool(self.x or self.y)
+
+    def angle(self) -> float:
+        return math.atan2(self.y, self.x)
+    
+    # def __iter__(self):
+    #     yield self.x
+    #     yield self.y
+
+    def __iter__(self):
+        return (n for n in (self.x, self.y))
+    
+    def __hash__(self) -> int:
+        return hash(list(self))
 
 def test_Vector_init():
     v = Vector(1, 2)
@@ -34,7 +65,7 @@ def test_Vector_conversion_to_bool():
     v = Vector(0, 0)
     assert not v
 
-    v = Vector(1.0, 0.0)
+    v = Vector(2.0, 0.0)
     assert v
 
 
@@ -46,11 +77,11 @@ def test_Vector_repr():
 
 def test_Vector_iterator():
     import pytest
-    v = Vector(3, 4)
+    v = Vector(y=4, x=3)
 
     it = iter(v)
-    assert next(it) == 3
-    assert next(it) == 4
+    assert next(it) == v.x
+    assert next(it) == v.y
 
     with pytest.raises(StopIteration):
         next(it)
@@ -64,7 +95,7 @@ def test_Vector_iterator():
 ])
 def test_Vector_angle(x, y, angle):
     v = Vector(x, y)
-    assert v.angle == pytest.approx(angle, 0.0001)
+    assert v.angle() == pytest.approx(angle, 0.0001)
 
 
 def test_Vector_hashing():
